@@ -42,6 +42,9 @@
         body {
             background: linear-gradient(to bottom, #00ffff, #6bff60, #1900ff);
         }
+        .hidden{
+            hidden = none;
+        }
     </style>
 </head>
 <body>
