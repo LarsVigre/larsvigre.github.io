@@ -1,4 +1,5 @@
 # larsvigre.github.io
+<!DOCTYPE html>
 <html>
   <head>
     <title>Physics Fight</title>
@@ -248,4 +249,4 @@
       requestAnimationFrame(render);
     </script>
   </body>
-</html>
+</ht
