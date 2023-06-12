@@ -1,74 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>2D Platformer Game</title>
     <style>
-        #gameCanvas {
-            background-color: #000000;
-        }
-        #healthBarContainer {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        #healthBarContainer2 {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        .healthBar {
-            width: 100px;
-            height: 20px;
-            background-color: #FF0000;
-            border: 2px solid #FFFFFF;
-        }
-        .healthBarFill {
-            width: 100%;
-            height: 100%;
-            background-color: #00FF00;
+        canvas {
+            border: 1px solid black;
         }
     </style>
 </head>
 <body>
-    <div id="healthBarContainer">
-        <div id="healthBar1" class="healthBar">
-            <div id="healthBarFill1" class="healthBarFill"></div>
-        </div>
-    </div>
-    <div id="healthBarContainer2">
-        <div id="healthBar2" class="healthBar">
-            <div id="healthBarFill2" class="healthBarFill"></div>
-        </div>
-    </div>
     <canvas id="gameCanvas" width="800" height="400"></canvas>
     <script>
-        window.onload = function() {
+        window.onload = function () {
             var canvas = document.getElementById("gameCanvas");
             var ctx = canvas.getContext("2d");
 
-            // Player objects
-            var player1 = createPlayer("https://cdn.imgbin.com/7/21/9/imgbin-terraria-super-mario-bros-super-mario-world-sprite-video-game-sprite-H9K3NLYGJ7t6JQW83zEyqNAq3.jpg", 50, canvas.height - 150);
-            var player2 = createPlayer("https://cdn.imgbin.com/7/21/9/imgbin-terraria-super-mario-bros-super-mario-world-sprite-video-game-sprite-H9K3NLYGJ7t6JQW83zEyqNAq3.jpg", canvas.width - 100, canvas.height - 150);
-
-            // Floor object
-            var floor = {
-                sprite: new Image(),
-                x: 0,
-                y: canvas.height - 50,
-                width: canvas.width,
-                height: 50
+            var keysPlayer1 = {
+                up: false,
+                down: false,
+                left: false,
+                right: false
             };
-            floor.sprite.src = "https://art.pixilart.com/60b489d89a36e4b.png";
+            var keysPlayer2 = {
+                up: false,
+                down: false,
+                left: false,
+                right: false
+            };
 
-            // Health bars
-            var healthBar1 = document.getElementById("healthBarFill1");
-            var healthBar2 = document.getElementById("healthBarFill2");
+            var player1 = createPlayer("https://cdn.imgbin.com/7/21/9/imgbin-terraria-super-mario-bros-super-mario-world-sprite-video-game-sprite-H9K3NLYGJ7t6JQW83zEyqNAq3.jpg", 50, canvas.height - 100);
+            var player2 = createPlayer("https://cdn.imgbin.com/7/21/9/imgbin-terraria-super-mario-bros-super-mario-world-sprite-video-game-sprite-H9K3NLYGJ7t6JQW83zEyqNAq3.jpg", canvas.width - 100, canvas.height - 100);
 
-            // Keyboard input handling
-            var keysPlayer1 = {};
-            var keysPlayer2 = {};
+            var bullets = [];
+            var bulletSpeed = 5;
 
-            document.addEventListener("keydown", function(e) {
+            document.addEventListener("keydown", function (e) {
                 if (e.key === "ArrowUp") {
                     keysPlayer2["up"] = true;
                 }
@@ -93,36 +58,41 @@
                 if (e.key === "s") {
                     keysPlayer1["down"] = true;
                 }
+                if (e.key === "r") {
+                    shootBullet(player1);
+                }
+                if (e.key === "n") {
+                    shootBullet(player2);
+                }
             });
 
-            document.addEventListener("keyup", function(e) {
+            document.addEventListener("keyup", function (e) {
                 if (e.key === "ArrowUp") {
-                    delete keysPlayer2["up"];
+                    keysPlayer2["up"] = false;
                 }
                 if (e.key === "ArrowLeft") {
-                    delete keysPlayer2["left"];
+                    keysPlayer2["left"] = false;
                 }
                 if (e.key === "ArrowRight") {
-                    delete keysPlayer2["right"];
+                    keysPlayer2["right"] = false;
                 }
                 if (e.key === "ArrowDown") {
-                    delete keysPlayer2["down"];
+                    keysPlayer2["down"] = false;
                 }
                 if (e.key === "w") {
-                    delete keysPlayer1["up"];
+                    keysPlayer1["up"] = false;
                 }
                 if (e.key === "a") {
-                    delete keysPlayer1["left"];
+                    keysPlayer1["left"] = false;
                 }
                 if (e.key === "d") {
-                    delete keysPlayer1["right"];
+                    keysPlayer1["right"] = false;
                 }
                 if (e.key === "s") {
-                    delete keysPlayer1["down"];
+                    keysPlayer1["down"] = false;
                 }
             });
 
-            // Player creation function
             function createPlayer(spriteUrl, x, y) {
                 var player = {
                     sprite: new Image(),
@@ -131,106 +101,191 @@
                     width: 50,
                     height: 50,
                     speed: 5,
-                    jumping: false,
-                    jumpHeight: 12,
-                    gravity: 0.6,
+                    jumpHeight: 10,
+                    gravity: 0.5,
                     velocityY: 0,
+                    jumping: false,
                     health: 100,
-                    maxHealth: 100
+                    maxHealth: 100,
+                    score: 0
                 };
                 player.sprite.src = spriteUrl;
                 return player;
             }
 
-            // Check collision between two rectangles
-            function checkCollision(rect1, rect2) {
-                return rect1.x < rect2.x + rect2.width &&
-                       rect1.x + rect1.width > rect2.x &&
-                       rect1.y < rect2.y + rect2.height &&
-                       rect1.y + rect1.height > rect2.y;
+            function shootBullet(player) {
+                var bullet = {
+                    x: player.x + player.width / 2 - 5,
+                    y: player.y + player.height / 2 - 5,
+                    width: 10,
+                    height: 10,
+                    speedX: 0,
+                    speedY: 0,
+                    shooter: player
+                };
+
+                var lastMovement = player.lastMovement;
+                if (lastMovement === "up") {
+                    bullet.speedY = -bulletSpeed;
+                } else if (lastMovement === "down") {
+                    bullet.speedY = bulletSpeed;
+                } else if (lastMovement === "left") {
+                    bullet.speedX = -bulletSpeed;
+                } else if (lastMovement === "right") {
+                    bullet.speedX = bulletSpeed;
+                }
+
+                bullets.push(bullet);
             }
 
-            // Game update loop
+            function checkCollision(obj1, obj2) {
+                return (
+                    obj1.x < obj2.x + obj2.width &&
+                    obj1.x + obj1.width > obj2.x &&
+                    obj1.y < obj2.y + obj2.height &&
+                    obj1.y + obj1.height > obj2.y
+                );
+            }
+
+            function updatePlayer(player, keys) {
+                if (keys["up"] && !player.jumping) {
+                    player.velocityY -= player.jumpHeight;
+                    player.jumping = true;
+                }
+                if (keys["left"]) {
+                    player.x -= player.speed;
+                    player.lastMovement = "left";
+                }
+                if (keys["right"]) {
+                    player.x += player.speed;
+                    player.lastMovement = "right";
+                }
+                if (keys["down"]) {
+                    player.y += player.speed;
+                    player.lastMovement = "down";
+                }
+
+                // Apply gravity
+                player.velocityY += player.gravity;
+                player.y += player.velocityY;
+                player.jumping = true;
+
+                // Check collision with floor
+                if (player.y + player.height > canvas.height - 50) {
+                    player.y = canvas.height - 50 - player.height;
+                    player.velocityY = 0;
+                    player.jumping = false;
+                }
+
+                // Check collision with walls
+                if (player.x < 0) {
+                    player.x = 0;
+                }
+                if (player.x + player.width > canvas.width) {
+                    player.x = canvas.width - player.width;
+                }
+            }
+
+            function updateBullets() {
+                for (var i = 0; i < bullets.length; i++) {
+                    var bullet = bullets[i];
+                    bullet.x += bullet.speedX;
+                    bullet.y += bullet.speedY;
+
+                    // Check collision with players
+                    if (bullet.shooter === player1) {
+                        if (checkCollision(bullet, player2)) {
+                            player2.health -= 10;
+                            if (player2.health <= 0) {
+                                player1.score++;
+                                player1.health = player1.maxHealth;
+                                player2.health = player2.maxHealth;
+                            }
+                            bullets.splice(i, 1);
+                            i--;
+                            continue;
+                        }
+                    } else if (bullet.shooter === player2) {
+                        if (checkCollision(bullet, player1)) {
+                            player1.health -= 10;
+                            if (player1.health <= 0) {
+                                player2.score++;
+                                player1.health = player1.maxHealth;
+                                player2.health = player2.maxHealth;
+                            }
+                            bullets.splice(i, 1);
+                            i--;
+                            continue;
+                        }
+                    }
+
+                    // Check if bullet is out of bounds
+                    if (
+                        bullet.x < 0 ||
+                        bullet.x > canvas.width ||
+                        bullet.y < 0 ||
+                        bullet.y > canvas.height
+                    ) {
+                        bullets.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+
+            function drawPlayer(player) {
+                ctx.drawImage(player.sprite, player.x, player.y, player.width, player.height);
+            }
+
+            function drawBullets() {
+                for (var i = 0; i < bullets.length; i++) {
+                    var bullet = bullets[i];
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+                }
+            }
+
+            function drawHealthBar(player, x, y) {
+                ctx.fillStyle = "red";
+                ctx.fillRect(x, y, 100, 10);
+                ctx.fillStyle = "green";
+                ctx.fillRect(x, y, (player.health / player.maxHealth) * 100, 10);
+            }
+
+            function drawScore() {
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "black";
+                ctx.fillText("Score: " + player1.score, 10, 30);
+                ctx.fillText("Score: " + player2.score, canvas.width - 100, 30);
+            }
+
             function update() {
-                // Player 1 movement
-                if (keysPlayer1["left"]) {
-                    player1.x -= player1.speed;
-                }
-                if (keysPlayer1["right"]) {
-                    player1.x += player1.speed;
-                }
-                if (keysPlayer1["up"] && !player1.jumping) {
-                    player1.velocityY -= player1.jumpHeight;
-                    player1.jumping = true;
-                }
-                if (keysPlayer1["down"]) {
-                    // Add any additional downward movement logic for Player 1 here
-                }
-
-                // Player 2 movement
-                if (keysPlayer2["left"]) {
-                    player2.x -= player2.speed;
-                }
-                if (keysPlayer2["right"]) {
-                    player2.x += player2.speed;
-                }
-                if (keysPlayer2["up"] && !player2.jumping) {
-                    player2.velocityY -= player2.jumpHeight;
-                    player2.jumping = true;
-                }
-                if (keysPlayer2["down"]) {
-                    // Add any additional downward movement logic for Player 2 here
-                }
-
-                // Apply gravity to Player 1
-                player1.velocityY += player1.gravity;
-                player1.y += player1.velocityY;
-
-                // Apply gravity to Player 2
-                player2.velocityY += player2.gravity;
-                player2.y += player2.velocityY;
-
-                // Floor collision detection for Player 1
-                if (player1.y + player1.height > floor.y) {
-                    player1.y = floor.y - player1.height;
-                    player1.jumping = false;
-                    player1.velocityY = 0;
-                }
-
-                // Floor collision detection for Player 2
-                if (player2.y + player2.height > floor.y) {
-                    player2.y = floor.y - player2.height;
-                    player2.jumping = false;
-                    player2.velocityY = 0;
-                }
-
-                // Collision detection between players
-                if (checkCollision(player1, player2)) {
-                    // Handle collision logic between players here
-                    // For example, reduce health or push players apart
-                }
-
-                // Update health bars
-                healthBar1.style.width = (player1.health / player1.maxHealth) * 100 + "%";
-                healthBar2.style.width = (player2.health / player2.maxHealth) * 100 + "%";
-
                 // Clear canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Draw floor
-                ctx.drawImage(floor.sprite, floor.x, floor.y, floor.width, floor.height);
+                // Update players
+                updatePlayer(player1, keysPlayer1);
+                updatePlayer(player2, keysPlayer2);
 
-                // Draw Player 1
-                ctx.drawImage(player1.sprite, player1.x, player1.y, player1.width, player1.height);
+                // Update bullets
+                updateBullets();
 
-                // Draw Player 2
-                ctx.drawImage(player2.sprite, player2.x, player2.y, player2.width, player2.height);
+                // Draw players
+                drawPlayer(player1);
+                drawPlayer(player2);
 
-                // Call update function again
+                // Draw bullets
+                drawBullets();
+
+                // Draw health bars
+                drawHealthBar(player1, 10, 10);
+                drawHealthBar(player2, canvas.width - 110, 10);
+
+                // Draw score
+                drawScore();
+
                 requestAnimationFrame(update);
             }
 
-            // Start the game loop
             update();
         };
     </script>
