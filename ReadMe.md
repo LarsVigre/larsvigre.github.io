@@ -37,13 +37,25 @@
             background-color: #2980b9;
         }
 
-        .volume-controls {
-            margin-top: 20px;
+        .submenu-button {
+            display: block;
+            margin: 10px auto;
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #ccc;
+            border: none;
+            color: #333;
+            border-radius: 3px;
+            cursor: pointer;
         }
 
-        label, input {
-            display: block;
-            margin-bottom: 10px;
+        .submenu-button:hover {
+            background-color: #bbb;
+        }
+
+        .volume-controls {
+            display: none;
+            margin-top: 20px;
         }
 
         .controls-menu {
@@ -81,20 +93,52 @@
             color: #777;
             cursor: pointer;
         }
+
+        .settings-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .settings-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+        }
     </style>
 </head>
 <body>
     <div class="menu-container">
         <button id="play-button">Play</button>
-        <div class="volume-controls">
-            <label>Master Volume:</label>
-            <input type="range" id="master-volume" min="0" max="100" value="50">
-            <label>Music Volume:</label>
-            <input type="range" id="music-volume" min="0" max="100" value="50">
-            <label>Sound Effect Volume:</label>
-            <input type="range" id="sound-effect-volume" min="0" max="100" value="50">
+        <button class="submenu-button" id="open-settings">Settings</button>
+    </div>
+
+    <div class="settings-menu" id="settings-menu">
+        <div class="settings-box">
+            <button class="submenu-button" id="open-audio-settings">Audio</button>
+            <button class="submenu-button" id="open-controls">Controls</button>
+            <button class="submenu-button" id="close-settings">&#10006; Close Settings</button>
         </div>
-        <button id="controls-button">Controls</button>
+    </div>
+
+    <div class="volume-controls" id="audio-settings">
+        <label>Master Volume:</label>
+        <input type="range" id="master-volume" min="0" max="100" value="50">
+        <label>Music Volume:</label>
+        <input type="range" id="music-volume" min="0" max="100" value="50">
+        <label>Sound Effect Volume:</label>
+        <input type="range" id="sound-effect-volume" min="0" max="100" value="50">
     </div>
 
     <div class="controls-menu" id="controls-menu">
@@ -108,9 +152,27 @@
     </div>
 
     <script>
+        const settingsMenu = document.getElementById("settings-menu");
+        const openSettingsButton = document.getElementById("open-settings");
+        const closeSettingsButton = document.getElementById("close-settings");
+        const openAudioSettingsButton = document.getElementById("open-audio-settings");
+        const audioSettings = document.getElementById("audio-settings");
+        
+        openSettingsButton.addEventListener("click", function () {
+            settingsMenu.style.display = "block";
+        });
+
+        closeSettingsButton.addEventListener("click", function () {
+            settingsMenu.style.display = "none";
+        });
+
+        openAudioSettingsButton.addEventListener("click", function () {
+            audioSettings.style.display = "block";
+        });
+
         const controlsMenu = document.getElementById("controls-menu");
         const closeControlsButton = document.getElementById("close-controls");
-        const openControlsButton = document.getElementById("controls-button");
+        const openControlsButton = document.getElementById("open-controls");
 
         openControlsButton.addEventListener("click", function () {
             controlsMenu.style.display = "block";
