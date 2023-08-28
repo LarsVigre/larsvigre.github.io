@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -53,68 +54,22 @@
             background-color: #bbb;
         }
 
-        .volume-controls {
+        .submenu {
             display: none;
             margin-top: 20px;
         }
 
-        .controls-menu {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 2;
-        }
-
-        .controls-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            max-width: 300px;
-        }
-
-        .controls-header {
+        .submenu-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
 
-        .close-button {
+        .submenu-header .close-button {
             font-size: 20px;
             color: #777;
             cursor: pointer;
-        }
-
-        .settings-menu {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 2;
-        }
-
-        .settings-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            max-width: 300px;
         }
     </style>
 </head>
@@ -124,15 +79,20 @@
         <button class="submenu-button" id="open-settings">Settings</button>
     </div>
 
-    <div class="settings-menu" id="settings-menu">
-        <div class="settings-box">
-            <button class="submenu-button" id="open-audio-settings">Audio</button>
-            <button class="submenu-button" id="open-controls">Controls</button>
-            <button class="submenu-button" id="close-settings">&#10006; Close Settings</button>
+    <div class="submenu" id="settings-menu">
+        <div class="submenu-header">
+            <span>Settings</span>
+            <span class="close-button" id="close-settings">&#10006;</span>
         </div>
+        <button class="submenu-button" id="open-audio">Audio</button>
+        <button class="submenu-button" id="open-controls">Controls</button>
     </div>
 
-    <div class="volume-controls" id="audio-settings">
+    <div class="submenu" id="audio-menu">
+        <div class="submenu-header">
+            <span>Audio Settings</span>
+            <span class="close-button" id="close-audio">&#10006;</span>
+        </div>
         <label>Master Volume:</label>
         <input type="range" id="master-volume" min="0" max="100" value="50">
         <label>Music Volume:</label>
@@ -141,46 +101,26 @@
         <input type="range" id="sound-effect-volume" min="0" max="100" value="50">
     </div>
 
-    <div class="controls-menu" id="controls-menu">
-        <div class="controls-box">
-            <div class="controls-header">
-                <span>Controls</span>
-                <span class="close-button" id="close-controls">&#10006;</span>
-            </div>
-            <p>[ jump, left, right, shoot ]</p>
+    <div class="submenu" id="controls-menu">
+        <div class="submenu-header">
+            <span>Controls</span>
+            <span class="close-button" id="close-controls">&#10006;</span>
         </div>
+        <p>[ jump, left, right, shoot ]</p>
     </div>
 
     <script>
-        const settingsMenu = document.getElementById("settings-menu");
-        const openSettingsButton = document.getElementById("open-settings");
-        const closeSettingsButton = document.getElementById("close-settings");
-        const openAudioSettingsButton = document.getElementById("open-audio-settings");
-        const audioSettings = document.getElementById("audio-settings");
-        
-        openSettingsButton.addEventListener("click", function () {
-            settingsMenu.style.display = "block";
-        });
+        function toggleMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            menu.style.display = menu.style.display === "none" ? "block" : "none";
+        }
 
-        closeSettingsButton.addEventListener("click", function () {
-            settingsMenu.style.display = "none";
-        });
-
-        openAudioSettingsButton.addEventListener("click", function () {
-            audioSettings.style.display = "block";
-        });
-
-        const controlsMenu = document.getElementById("controls-menu");
-        const closeControlsButton = document.getElementById("close-controls");
-        const openControlsButton = document.getElementById("open-controls");
-
-        openControlsButton.addEventListener("click", function () {
-            controlsMenu.style.display = "block";
-        });
-
-        closeControlsButton.addEventListener("click", function () {
-            controlsMenu.style.display = "none";
-        });
+        document.getElementById("open-settings").addEventListener("click", () => toggleMenu("settings-menu"));
+        document.getElementById("close-settings").addEventListener("click", () => toggleMenu("settings-menu"));
+        document.getElementById("open-audio").addEventListener("click", () => toggleMenu("audio-menu"));
+        document.getElementById("close-audio").addEventListener("click", () => toggleMenu("audio-menu"));
+        document.getElementById("open-controls").addEventListener("click", () => toggleMenu("controls-menu"));
+        document.getElementById("close-controls").addEventListener("click", () => toggleMenu("controls-menu"));
     </script>
 </body>
 </html>
