@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -110,10 +111,17 @@
 
     <script>
         function showSubMenu(submenuId) {
-            const currentMenu = document.querySelector(".submenu-container.visible");
-            if (currentMenu) {
-                currentMenu.classList.remove("visible");
-            }
+            const mainMenu = document.getElementById("main-menu");
+            const settingsMenu = document.getElementById("settings-menu");
+            const submenus = document.querySelectorAll(".submenu-container");
+
+            mainMenu.style.display = "none";
+            settingsMenu.style.display = "none";
+
+            submenus.forEach(submenu => {
+                submenu.classList.remove("visible");
+            });
+
             const submenu = document.getElementById(submenuId);
             submenu.classList.add("visible");
         }
