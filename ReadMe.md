@@ -1,4 +1,3 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +12,7 @@
             background-color: #f0f0f0;
         }
 
-        .menu-container {
+        .menu-container, .submenu-container {
             max-width: 400px;
             margin: 100px auto;
             padding: 20px;
@@ -74,12 +73,12 @@
     </style>
 </head>
 <body>
-    <div class="menu-container">
+    <div class="menu-container" id="main-menu">
         <button id="play-button">Play</button>
         <button class="submenu-button" id="open-settings">Settings</button>
     </div>
 
-    <div class="submenu" id="settings-menu">
+    <div class="submenu-container" id="settings-menu">
         <div class="submenu-header">
             <span>Settings</span>
             <span class="close-button" id="close-settings">&#10006;</span>
@@ -88,7 +87,7 @@
         <button class="submenu-button" id="open-controls">Controls</button>
     </div>
 
-    <div class="submenu" id="audio-menu">
+    <div class="submenu-container" id="audio-menu">
         <div class="submenu-header">
             <span>Audio Settings</span>
             <span class="close-button" id="close-audio">&#10006;</span>
@@ -101,7 +100,7 @@
         <input type="range" id="sound-effect-volume" min="0" max="100" value="50">
     </div>
 
-    <div class="submenu" id="controls-menu">
+    <div class="submenu-container" id="controls-menu">
         <div class="submenu-header">
             <span>Controls</span>
             <span class="close-button" id="close-controls">&#10006;</span>
@@ -110,17 +109,21 @@
     </div>
 
     <script>
-        function toggleMenu(menuId) {
-            const menu = document.getElementById(menuId);
-            menu.style.display = menu.style.display === "none" ? "block" : "none";
+        function showSubMenu(submenuId) {
+            const currentMenu = document.querySelector(".submenu-container.visible");
+            if (currentMenu) {
+                currentMenu.classList.remove("visible");
+            }
+            const submenu = document.getElementById(submenuId);
+            submenu.classList.add("visible");
         }
 
-        document.getElementById("open-settings").addEventListener("click", () => toggleMenu("settings-menu"));
-        document.getElementById("close-settings").addEventListener("click", () => toggleMenu("settings-menu"));
-        document.getElementById("open-audio").addEventListener("click", () => toggleMenu("audio-menu"));
-        document.getElementById("close-audio").addEventListener("click", () => toggleMenu("audio-menu"));
-        document.getElementById("open-controls").addEventListener("click", () => toggleMenu("controls-menu"));
-        document.getElementById("close-controls").addEventListener("click", () => toggleMenu("controls-menu"));
+        document.getElementById("open-settings").addEventListener("click", () => showSubMenu("settings-menu"));
+        document.getElementById("close-settings").addEventListener("click", () => showSubMenu("main-menu"));
+        document.getElementById("open-audio").addEventListener("click", () => showSubMenu("audio-menu"));
+        document.getElementById("close-audio").addEventListener("click", () => showSubMenu("settings-menu"));
+        document.getElementById("open-controls").addEventListener("click", () => showSubMenu("controls-menu"));
+        document.getElementById("close-controls").addEventListener("click", () => showSubMenu("settings-menu"));
     </script>
 </body>
 </html>
