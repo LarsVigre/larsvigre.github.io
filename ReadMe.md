@@ -109,15 +109,20 @@
 
     <script>
         function toggleMenu(menuId) {
-            const mainMenu = document.getElementById("main-menu");
-            const menu = document.getElementById(menuId);
+            const settingsMenu = document.getElementById("settings-menu");
+            const audioMenu = document.getElementById("audio-menu");
+            const controlsMenu = document.getElementById("controls-menu");
 
-            mainMenu.style.display = "none";
-            menu.style.display = "block";
+            settingsMenu.style.display = "none";
+            audioMenu.style.display = "none";
+            controlsMenu.style.display = "none";
+
+            const menuToShow = document.getElementById(menuId);
+            menuToShow.style.display = "block";
         }
 
         document.getElementById("open-settings").addEventListener("click", () => toggleMenu("settings-menu"));
-        document.getElementById("close-settings").addEventListener("click", () => toggleMenu("main-menu"));
+        document.getElementById("close-settings").addEventListener("click", () => toggleMenu("settings-menu"));
         document.getElementById("open-audio").addEventListener("click", () => toggleMenu("audio-menu"));
         document.getElementById("close-audio").addEventListener("click", () => toggleMenu("settings-menu"));
         document.getElementById("open-controls").addEventListener("click", () => toggleMenu("controls-menu"));
