@@ -45,6 +45,42 @@
             display: block;
             margin-bottom: 10px;
         }
+
+        .controls-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .controls-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .close-button {
+            font-size: 20px;
+            color: #777;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -60,41 +96,28 @@
         </div>
         <button id="controls-button">Controls</button>
     </div>
+
+    <div class="controls-menu" id="controls-menu">
+        <div class="controls-box">
+            <div class="controls-header">
+                <span>Controls</span>
+                <span class="close-button" id="close-controls">&#10006;</span>
+            </div>
+            <p>[ jump, left, right, shoot ]</p>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const playButton = document.getElementById("play-button");
-            const masterVolumeInput = document.getElementById("master-volume");
-            const musicVolumeInput = document.getElementById("music-volume");
-            const soundEffectVolumeInput = document.getElementById("sound-effect-volume");
-            const controlsButton = document.getElementById("controls-button");
+        const controlsMenu = document.getElementById("controls-menu");
+        const closeControlsButton = document.getElementById("close-controls");
+        const openControlsButton = document.getElementById("controls-button");
 
-            playButton.addEventListener("click", function () {
-                // Code to open the game goes here
-                alert("Starting the game!");
-            });
+        openControlsButton.addEventListener("click", function () {
+            controlsMenu.style.display = "block";
+        });
 
-            masterVolumeInput.addEventListener("input", function () {
-                // Code to adjust the master volume goes here
-                const volumeLevel = masterVolumeInput.value;
-                // Update the volume settings or perform any necessary actions
-            });
-
-            musicVolumeInput.addEventListener("input", function () {
-                // Code to adjust the music volume goes here
-                const volumeLevel = musicVolumeInput.value;
-                // Update the volume settings or perform any necessary actions
-            });
-
-            soundEffectVolumeInput.addEventListener("input", function () {
-                // Code to adjust the sound effects volume goes here
-                const volumeLevel = soundEffectVolumeInput.value;
-                // Update the volume settings or perform any necessary actions
-            });
-
-            controlsButton.addEventListener("click", function () {
-                // Code to open the controls settings goes here
-                alert("Opening controls settings");
-            });
+        closeControlsButton.addEventListener("click", function () {
+            controlsMenu.style.display = "none";
         });
     </script>
 </body>
