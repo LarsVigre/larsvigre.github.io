@@ -7,7 +7,8 @@
     <style>
         /* Hide sections initially */
         #login-success,
-        #calculator {
+        #calculator,
+        #signup {
             display: none;
         }
     </style>
