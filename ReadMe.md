@@ -43,6 +43,11 @@
         #signup.fade-out {
             opacity: 0;
         }
+
+        /* Hide calculator button initially */
+        #calculator-btn {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -64,7 +69,8 @@
         </section>
         <section id="login-success" class="visible">
             <h2></h2>
-            <button onclick="showCalculator();">Go to Calculator</button>
+            <!-- Calculator button wrapped inside login-success section -->
+            <button id="calculator-btn" onclick="showCalculator();">Go to Calculator</button>
             <button onclick="showSignup();">Sign Up</button>
         </section>
         <section id="calculator" class="calculator-hide">
@@ -104,6 +110,8 @@
                 document.getElementById("signup").classList.remove("visible");
                 document.getElementById("calculator").classList.remove("calculator-hide");
                 document.getElementById("calculator").classList.add("visible");
+                // Show calculator button after successful login
+                document.getElementById("calculator-btn").style.display = "block";
                 return false;
             } else {
                 alert("Invalid credentials");
@@ -159,6 +167,8 @@
             document.getElementById("login-form").classList.add("fade-out");
             document.getElementById("calculator").classList.add("calculator-hide");
             document.getElementById("calculator").classList.remove("visible");
+            // Hide calculator button if user navigates to sign up
+            document.getElementById("calculator-btn").style.display = "none";
         }
 
         function showLogin() {
@@ -189,4 +199,3 @@
     </script>
 </body>
 </html>
-
