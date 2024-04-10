@@ -23,7 +23,7 @@
         }
 
         #signup {
-            display: none;
+            display: none; /* Initially hide signup section */
         }
 
         #login-success.visible,
@@ -43,11 +43,6 @@
         #signup.fade-out {
             opacity: 0;
         }
-
-        /* Hide calculator button initially */
-        #calculator-btn {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -66,12 +61,13 @@
 
                 <button type="submit">Login</button>
             </form>
+            <!-- Button to toggle signup section -->
+            <button onclick="toggleSignup();">Sign Up</button>
         </section>
         <section id="login-success" class="visible">
             <h2></h2>
             <!-- Calculator button wrapped inside login-success section -->
             <button id="calculator-btn" onclick="showCalculator();">Go to Calculator</button>
-            <button onclick="showSignup();">Sign Up</button>
         </section>
         <section id="calculator" class="calculator-hide">
             <h2>Enter an expression to calculate</h2>
@@ -90,7 +86,8 @@
 
                 <button type="submit">Sign Up</button>
             </form>
-            <button onclick="showLogin();">Back to Login</button>
+            <!-- Button to hide signup section and show login form -->
+            <button onclick="hideSignup();">Back to Login</button>
         </section>
     </main>
     <footer>
@@ -161,22 +158,16 @@
             alert("Result copied to clipboard: " + resultField.value);
         }
 
-        function showSignup() {
-            document.getElementById("login-success").classList.remove("visible");
-            document.getElementById("signup").classList.add("visible");
-            document.getElementById("login-form").classList.add("fade-out");
-            document.getElementById("calculator").classList.add("calculator-hide");
-            document.getElementById("calculator").classList.remove("visible");
-            // Hide calculator button if user navigates to sign up
-            document.getElementById("calculator-btn").style.display = "none";
+        function toggleSignup() {
+            // Toggle visibility of signup section
+            document.getElementById("signup").classList.toggle("visible");
+            document.getElementById("login-form").classList.toggle("fade-out");
         }
 
-        function showLogin() {
-            document.getElementById("login-form").classList.remove("fade-out");
+        function hideSignup() {
+            // Hide signup section and show login form
             document.getElementById("signup").classList.remove("visible");
-            document.getElementById("calculator").classList.remove("visible");
-            document.getElementById("calculator").classList.add("calculator-hide");
-            document.getElementById("login-success").classList.remove("visible");
+            document.getElementById("login-form").classList.remove("fade-out");
         }
 
         function signup() {
