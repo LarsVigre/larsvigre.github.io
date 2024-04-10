@@ -127,18 +127,18 @@
         }
 
         function showSignup() {
-            document.getElementById("login-success").classList.remove("visible");
-            document.getElementById("signup").classList.add("visible");
             document.getElementById("login-form").classList.add("fade-out");
+            document.getElementById("signup").classList.add("visible");
+            document.getElementById("signup").classList.remove("signup-hide");
             document.getElementById("calculator").classList.add("calculator-hide");
             document.getElementById("calculator").classList.remove("visible");
-            // Hide calculator button if user navigates to sign up
-            document.getElementById("calculator-btn").style.display = "none";
+            document.getElementById("login-success").classList.remove("visible");
         }
 
         function showLogin() {
             document.getElementById("login-form").classList.remove("fade-out");
             document.getElementById("signup").classList.remove("visible");
+            document.getElementById("signup").classList.add("signup-hide");
             document.getElementById("calculator").classList.remove("visible");
             document.getElementById("calculator").classList.add("calculator-hide");
             document.getElementById("login-success").classList.remove("visible");
