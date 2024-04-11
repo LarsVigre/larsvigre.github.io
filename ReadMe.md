@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -49,21 +49,21 @@
             return error.toString();
         }
     }
-
+    
     function solveAndCopy() {
         let expression = document.getElementById("expression").value;
         let expressionCleaned = expression.replace(/[a-zA-Z]/g, '').replace(/,/g, '.').replace(/av/g, '').replace(/til/g, '').replace(/%/g, '/100').replace(/−/g, '-').replace(/⋅/g, '').replace(/:/g, '/').replace(/\?/g, '');
         let result = solveExpression(expressionCleaned);
         document.getElementById("result").value = result;
     }
-
+    
     function copyResult() {
         let resultField = document.getElementById("result");
         resultField.select();
         document.execCommand("copy");
         alert("Result copied to clipboard: " + resultField.value);
     }
-
+    
     // Add event listener to textarea
     let expressionTextarea = document.getElementById("expression");
     expressionTextarea.addEventListener("input", solveAndCopy);
