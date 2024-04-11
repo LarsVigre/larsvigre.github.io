@@ -4,20 +4,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
-        /* Hide sections initially */
-        #login-success,
-        #calculator,
+        #calculator {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #login-form {
+            display: block;
+        }
+
+        #login-success {
+            display: none;
+        }
+
         #signup {
             display: none;
+        }
+
+        #login-success.visible,
+        #calculator.visible,
+        #signup.visible {
+            opacity: 1;
+            display: block;
+        }
+
+        #login-form,
+        #signup {
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        #login-form.fade-out,
+        #signup.fade-out {
+            opacity: 0;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Login</h1>
+        <h1></h1>
     </header>
     <main>
-        <section id="login-form">
+        <section id="login-form" class="login-hide">
             <h2>Enter your credentials</h2>
             <form action="#" method="post" onsubmit="return login();">
                 <label for="username">Username:</label>
@@ -28,13 +61,11 @@
 
                 <button type="submit">Login</button>
             </form>
-            <!-- Button to switch to signup form -->
-            <button onclick="showSignup();">Sign Up</button>
         </section>
         <section id="login-success" class="visible">
             <h2></h2>
-            <!-- Calculator button -->
-            <button id="calculator-btn" onclick="showCalculator();">Go to Calculator</button>
+            <button onclick="showCalculator();">Go to Calculator</button>
+            <button onclick="showSignup();">Sign Up</button>
         </section>
         <section id="calculator" class="calculator-hide">
             <h2>Enter an expression to calculate</h2>
@@ -53,7 +84,6 @@
 
                 <button type="submit">Sign Up</button>
             </form>
-            <!-- Button to switch back to login form -->
             <button onclick="showLogin();">Back to Login</button>
         </section>
     </main>
@@ -74,8 +104,6 @@
                 document.getElementById("signup").classList.remove("visible");
                 document.getElementById("calculator").classList.remove("calculator-hide");
                 document.getElementById("calculator").classList.add("visible");
-                // Show calculator button after successful login
-                document.getElementById("calculator-btn").style.display = "block";
                 return false;
             } else {
                 alert("Invalid credentials");
@@ -126,10 +154,9 @@
         }
 
         function showSignup() {
-            document.getElementById("login-form").classList.add("fade-out");
             document.getElementById("login-success").classList.remove("visible");
             document.getElementById("signup").classList.add("visible");
-            document.getElementById("signup").classList.remove("signup-hide");
+            document.getElementById("login-form").classList.add("fade-out");
             document.getElementById("calculator").classList.add("calculator-hide");
             document.getElementById("calculator").classList.remove("visible");
         }
@@ -137,7 +164,6 @@
         function showLogin() {
             document.getElementById("login-form").classList.remove("fade-out");
             document.getElementById("signup").classList.remove("visible");
-            document.getElementById("signup").classList.add("signup-hide");
             document.getElementById("calculator").classList.remove("visible");
             document.getElementById("calculator").classList.add("calculator-hide");
             document.getElementById("login-success").classList.remove("visible");
