@@ -11,6 +11,14 @@
         #signup {
             display: none;
         }
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .fade-in {
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -18,7 +26,7 @@
         <h1>Login</h1>
     </header>
     <main>
-        <section id="login-form">
+        <section id="login-form" class="fade-in">
             <h2>Enter your credentials</h2>
             <form action="#" method="post" onsubmit="return login();">
                 <label for="username">Username:</label>
@@ -43,7 +51,7 @@
             <input type="text" id="result" readonly>
             <button onclick="copyResult();">Copy Result</button>
         </section>
-        <section id="signup" class="visible signup-hide">
+        <section id="signup" class="visible signup-hide fade-out">
             <h2>Sign Up</h2>
             <form action="#" method="post" onsubmit="return signup();">
                 <label for="new-username">Username:</label>
@@ -128,7 +136,7 @@
 
         function showSignup() {
             document.getElementById("login-form").classList.add("fade-out");
-            document.getElementById("signup").classList.add("visible");
+            document.getElementById("signup").classList.add("fade-in");
             document.getElementById("signup").classList.remove("signup-hide");
             document.getElementById("calculator").classList.add("calculator-hide");
             document.getElementById("calculator").classList.remove("visible");
@@ -137,7 +145,7 @@
 
         function showLogin() {
             document.getElementById("login-form").classList.remove("fade-out");
-            document.getElementById("signup").classList.remove("visible");
+            document.getElementById("signup").classList.remove("fade-in");
             document.getElementById("signup").classList.add("signup-hide");
             document.getElementById("calculator").classList.remove("visible");
             document.getElementById("calculator").classList.add("calculator-hide");
