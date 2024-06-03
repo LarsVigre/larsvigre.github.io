@@ -1,24 +1,60 @@
-<html lang="en"> <body> <form action="action_page.php" method="post">
-  <div class="imgcontainer">
-    <img src="img_avatar2.png" alt="Avatar" class="avatar">
-  </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Morse Code Transmitter</title>
+</head>
+<body>
+    <h1>Web Morse Code Transmitter</h1>
+    <input type="text" id="message" placeholder="Enter your message">
+    <button onclick="sendMessage()">Send Message</button>
+    
+    <script>
+        const morseCodeMap = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
+            'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
+            'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+            'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', 
+            '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.'
+        };
 
-  <div class="container">
-    <label for="uname"><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="uname" required>
+        function encodeToMorse(message) {
+            return message.toUpperCase().split('').map(char => morseCodeMap[char] || char).join(' ');
+        }
 
-    <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required>
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            const morseCode = encodeToMorse(message);
+            console.log('Morse Code:', morseCode);
+            playMorseCode(morseCode);
+        }
 
-    <button type="submit">Login</button>
-    <label>
-      <input type="checkbox" checked="checked" name="remember"> Remember me
-    </label>
-  </div>
+        function playMorseCode(morseCode) {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(1000, context.currentTime); // Set frequency to 1 kHz for audible tone
+            oscillator.start();
 
-  <div class="container" style="background-color:#f1f1f1">
-    <button type="button" class="cancelbtn">Cancel</button>
-    <span class="psw">Forgot <a href="#">password?</a></span>
-  </div>
-</form>
-</body> </html>
+            let time = context.currentTime;
+            const unit = 0.1; // Duration of a dot
+
+            for (const char of morseCode) {
+                if (char === '.') {
+                    oscillator.frequency.setValueAtTime(1000, time);
+                    time += unit;
+                } else if (char === '-') {
+                    oscillator.frequency.setValueAtTime(1000, time);
+                    time += 3 * unit;
+                } else {
+                    oscillator.frequency.setValueAtTime(0, time); // Turn off sound for space
+                    time += unit;
+                }
+                time += unit; // Space between dots and dashes
+            }
+
+            oscillator.stop(time);
+            oscillator.connect(context.destination);
+        }
+    </script>
+</body>
+</html>
