@@ -1,60 +1,70 @@
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Web Morse Code Transmitter</title>
+  <title>Public Messaging Area</title>
+  <style>
+    /* Add some basic styling to make it look decent */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #message-input {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #message-list {
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    #message-list li {
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    #message-list li:last-child {
+      border-bottom: none;
+    }
+  </style>
 </head>
 <body>
-    <h1>Web Morse Code Transmitter</h1>
-    <input type="text" id="message" placeholder="Enter your message">
-    <button onclick="sendMessage()">Send Message</button>
-    
-    <script>
-        const morseCodeMap = {
-            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
-            'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
-            'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
-            'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', 
-            '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.'
-        };
+  <h1>Public Messaging Area</h1>
+  <input id="message-input" type="text" placeholder="Type a message...">
+  <button id="send-button">Send</button>
+  <ul id="message-list"></ul>
 
-        function encodeToMorse(message) {
-            return message.toUpperCase().split('').map(char => morseCodeMap[char] || char).join(' ');
-        }
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script>
+    // Create a SockJS client
+    var socket = new SockJS('https://echo.websocket.org');
 
-        function sendMessage() {
-            const message = document.getElementById('message').value;
-            const morseCode = encodeToMorse(message);
-            console.log('Morse Code:', morseCode);
-            playMorseCode(morseCode);
-        }
+    // Set up the message input and send button
+    var messageInput = document.getElementById('message-input');
+    var sendButton = document.getElementById('send-button');
+    var messageList = document.getElementById('message-list');
 
-        function playMorseCode(morseCode) {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(20000, context.currentTime); // Set frequency to 20 kHz for audible tone
-            oscillator.start();
+    // Send a message when the send button is clicked
+    sendButton.addEventListener('click', function() {
+      var message = messageInput.value.trim();
+      if (message!== '') {
+        socket.send(message);
+        messageInput.value = '';
+      }
+    });
 
-            let time = context.currentTime;
-            const unit = 0.1; // Duration of a dot
+    // Receive messages from the server and display them
+    socket.onmessage = function(event) {
+      var message = event.data;
+      var messageElement = document.createElement('li');
+      messageElement.textContent = message;
+      messageList.appendChild(messageElement);
+      messageList.scrollTop = messageList.scrollHeight;
+    };
 
-            for (const char of morseCode) {
-                if (char === '.') {
-                    oscillator.frequency.setValueAtTime(20000, time);
-                    time += unit;
-                } else if (char === '-') {
-                    oscillator.frequency.setValueAtTime(20000, time);
-                    time += 3 * unit;
-                } else {
-                    oscillator.frequency.setValueAtTime(0, time); // Turn off sound for space
-                    time += unit;
-                }
-                time += unit; // Space between dots and dashes
-            }
-
-            oscillator.stop(time);
-            oscillator.connect(context.destination);
-        }
-    </script>
+    // Close the socket when the user leaves the page
+    window.addEventListener('beforeunload', function() {
+      socket.close();
+    });
+  </script>
 </body>
 </html>
