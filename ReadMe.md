@@ -32,7 +32,7 @@
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = context.createOscillator();
             oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(1000, context.currentTime); // Set frequency to 1 kHz for audible tone
+            oscillator.frequency.setValueAtTime(20000, context.currentTime); // Set frequency to 20 kHz for audible tone
             oscillator.start();
 
             let time = context.currentTime;
@@ -40,10 +40,10 @@
 
             for (const char of morseCode) {
                 if (char === '.') {
-                    oscillator.frequency.setValueAtTime(1000, time);
+                    oscillator.frequency.setValueAtTime(20000, time);
                     time += unit;
                 } else if (char === '-') {
-                    oscillator.frequency.setValueAtTime(1000, time);
+                    oscillator.frequency.setValueAtTime(20000, time);
                     time += 3 * unit;
                 } else {
                     oscillator.frequency.setValueAtTime(0, time); // Turn off sound for space
